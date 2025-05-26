@@ -1,0 +1,11 @@
+# synth.ys
+read_verilog rtl/matmul.v
+hierarchy -top matmul
+synth -top matmul
+
+# To get timing information?
+#flatten
+#techmap
+
+abc -liberty pdk/FreePDK45/osu_soc/lib/files/gscl45nm.lib
+stat

@@ -50,6 +50,10 @@ obj_dir/Vmatmul: $(VERILOG_SOURCES) src/verilator/main.cpp
 	  --top-module matmul
 	make -C obj_dir -f Vmatmul.mk Vmatmul
 
+.PHONY: synth
+synth:
+	yosys -s yosys/synth.ys
+
 .PHONY: clean
 clean:
 	rm -rf bin obj obj_dir
