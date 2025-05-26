@@ -4,12 +4,12 @@
 
 class Tensor {
 public:
-    float *data;
+    int *data;
     int hdim;
     int vdim;
 
     Tensor(int hdim, int vdim) : hdim(hdim), vdim(vdim) {
-        data = new float[hdim * vdim];
+        data = new int[hdim * vdim];
         if (data == NULL) {
             fprintf(stderr, "Memory allocation failed\n");
             exit(1);
@@ -28,11 +28,6 @@ static void matmul(const Tensor *matrix, const Tensor *input, Tensor *output) {
     assert(input->hdim == matrix->hdim);
     assert(output->hdim == matrix->vdim);
 
-    if (matrix->vdim != input->hdim) {
-        fprintf(stderr, "Matrix and input dimensions do not match for multiplication\n");
-        exit(1);
-    }
-
     for (int i = 0; i < matrix->hdim; i++) {
         for (int j = 0; j < input->vdim; j++) {
             for (int k = 0; k < matrix->vdim; k++) {
@@ -50,12 +45,12 @@ int main(int argc, char *argv[]) {
     Tensor matrix(3, 3);
     for (int i = 0; i < matrix.hdim; i++) {
       for (int j = 0; j < matrix.vdim; j++) {
-        matrix.data[i * matrix.vdim + j] = (float)(i * matrix.vdim + j);
+        matrix.data[i * matrix.vdim + j] = (i * matrix.vdim + j);
       }
     }
     Tensor input(3, 1);
     for (int i = 0; i < input.hdim; i++) {
-        input.data[i] = (float)i;
+        input.data[i] = i;
     }
     Tensor output(3, 1);
     for (int i = 0; i < output.hdim; i++) {
@@ -66,7 +61,7 @@ int main(int argc, char *argv[]) {
     // Print the output.
     printf("Output:\n");
     for (int i = 0; i < output.hdim; i++) {
-        printf("%f\n", output.data[i]);
+        printf("%d\n", output.data[i]);
     }
 
     return 0;
