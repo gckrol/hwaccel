@@ -12,11 +12,11 @@ WARN = -Wall -Wextra -Wpedantic -Wstrict-prototypes -Wpointer-arith -Wcast-qual 
 
 SANITIZE = # -fsanitize=undefined -fsanitize=address
 
-CC = clang $(WARN) $(SANITIZE) # -Rpass=loop-vectorize  -Rpass-missed=loop-vectorize -Rpass-analysis=loop-vectorize
+CC = clang++ $(WARN) $(SANITIZE) # -Rpass=loop-vectorize  -Rpass-missed=loop-vectorize -Rpass-analysis=loop-vectorize
 
 # Source files and object files
-SRC = $(wildcard src/*.c)
-OBJ = $(patsubst src/%.c,obj/%.o,$(SRC))
+SRC = $(wildcard src/*.cpp)
+OBJ = $(patsubst src/%.cpp,obj/%.o,$(SRC))
 OPT = -Ofast -march=native -flto -fopenmp-simd -pthread # -fopt-info-vec-missed # -fopenmp # -fopt-info-vec-missed
 INC = -Isrc
 
@@ -31,11 +31,11 @@ bin/%: obj/bin/%.o $(OBJ)
 	@mkdir -p bin
 	$(CC) $(OPT) $(INC) -g -o $@ $^ -lm
 
-obj/%.o: src/%.c
+obj/%.o: src/%.cpp
 	@mkdir -p obj
 	$(CC) $(OPT) $(INC) -g -c -o $@ $<
 
-obj/bin/%.o: src/bin/%.c
+obj/bin/%.o: src/bin/%.cpp
 	@mkdir -p obj
 	@mkdir -p obj/bin
 	$(CC) $(OPT) $(INC) -g -c -o $@ $<
