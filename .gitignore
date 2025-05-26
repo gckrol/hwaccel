@@ -2,3 +2,4 @@
 /notes
 /compile_commands.json
 /.clangd
+/obj_dir

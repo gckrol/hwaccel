@@ -20,12 +20,15 @@ OBJ = $(patsubst src/%.cpp,obj/%.o,$(SRC))
 OPT = -Ofast -march=native -flto -fopenmp-simd -pthread # -fopt-info-vec-missed # -fopenmp # -fopt-info-vec-missed
 INC = -Isrc
 
+VERILOG_SOURCES = rtl/matmul.v
+VERILATOR_FLAGS = -Wall -CFLAGS -std=c++17
+
 .PHONY: compile_commands
 compile_commands:
 	bear make clean all
 
 .PHONY: all
-all: bin/test
+all: bin/test obj_dir/Vmatmul
 
 bin/%: obj/bin/%.o $(OBJ)
 	@mkdir -p bin
@@ -40,6 +43,13 @@ obj/bin/%.o: src/bin/%.cpp
 	@mkdir -p obj/bin
 	$(CC) $(OPT) $(INC) -g -c -o $@ $<
 
+obj_dir/Vmatmul: $(VERILOG_SOURCES) src/verilator/main.cpp
+	verilator $(VERILATOR_FLAGS) \
+	  --cc $(VERILOG_SOURCES) \
+	  --exe src/verilator/main.cpp \
+	  --top-module matmul
+	make -C obj_dir -f Vmatmul.mk Vmatmul
+
 .PHONY: clean
 clean:
-	rm -rf bin obj
+	rm -rf bin obj obj_dir
