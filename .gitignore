@@ -3,6 +3,7 @@
 /compile_commands.json
 /.clangd
 /obj_dir
+/.cache
 
 # PDK files
 /pdk/FreePDK45

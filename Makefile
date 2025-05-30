@@ -25,10 +25,14 @@ VERILATOR_FLAGS = -Wall -CFLAGS -std=c++17
 
 .PHONY: compile_commands
 compile_commands:
-	bear make clean all
+	bear -- make clean all
 
 .PHONY: all
-all: bin/test obj_dir/Vmatmul
+all: bin/test test
+
+.PHONY: test
+test: obj_dir/Vmatmul
+	obj_dir/Vmatmul
 
 bin/%: obj/bin/%.o $(OBJ)
 	@mkdir -p bin
