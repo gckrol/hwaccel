@@ -1,12 +1,13 @@
-#include "Vmatmul.h"
+#include "Vmatmul_tb.h"
 #include "verilated.h"
+#include <cstdio>
 #include <iostream>
 #include <vector>
 
 // Function to perform matrix-vector multiplication using the matmul hardware
 std::vector<uint32_t> hw_matmul(const std::vector<std::vector<uint8_t>>& matrix, const std::vector<uint8_t>& vector) {
     // Create and initialize the hardware module
-    Vmatmul* dut = new Vmatmul;
+    Vmatmul_tb* dut = new Vmatmul_tb;
     
     // Reset the hardware
     dut->clk = 0; dut->rst = 1; dut->eval();
@@ -20,7 +21,19 @@ std::vector<uint32_t> hw_matmul(const std::vector<std::vector<uint8_t>>& matrix,
     // Set up for input
     dut->in_valid = 0;
     dut->out_ready = 1;
+    dut->vec_sram_we = 0;
     dut->eval();
+    
+    // Preload vector data into the SRAM
+    for (int i = 0; i < hdim; i++) {
+        dut->vec_sram_we = 1;
+        dut->vec_sram_addr = i;
+        dut->vec_sram_din = vector[i];
+        dut->clk = 1; dut->eval();
+        dut->clk = 0; dut->eval();
+    }
+    dut->vec_sram_we = 0;
+    printf("Vector loaded into SRAM.\n");
     
     // Send dimensions first (vdim)
     dut->in_data = vdim;
@@ -33,20 +46,19 @@ std::vector<uint32_t> hw_matmul(const std::vector<std::vector<uint8_t>>& matrix,
     dut->clk = 1; dut->eval();
     dut->clk = 0; dut->eval();
     
-    // Send vector elements
-    for (int i = 0; i < hdim; i++) {
-        dut->in_data = vector[i];
-        dut->clk = 1; dut->eval();
-        dut->clk = 0; dut->eval();
-    }
+    // Continue with READ_MATRIX state
+    printf("Matrix dimensions sent: %d x %d\n", vdim, hdim);
+    dut->in_valid = 1;
     
     // Send matrix rows and collect results
     std::vector<uint32_t> results;
     results.reserve(vdim);
     
+    printf("Starting matrix-vector multiplication...\n");
     for (int row = 0; row < vdim; row++) {
         // Send each element in the row
         for (int col = 0; col < hdim; col++) {
+            printf("Sending row %d, col %d: %u\n", row, col, matrix[row][col]);
             dut->in_data = matrix[row][col];
             dut->clk = 1; dut->eval();
             
@@ -60,18 +72,22 @@ std::vector<uint32_t> hw_matmul(const std::vector<std::vector<uint8_t>>& matrix,
             dut->clk = 0; dut->eval();
         }
     }
+    printf("Matrix-vector multiplication completed.\n");
     
     // Make sure we've received all results
     while (results.size() < vdim) {
+        // printf("Waiting for result %d of %d...\n", results.size(), vdim);
         dut->in_valid = 0;
         dut->clk = 1; dut->eval();
         
         if (dut->out_valid) {
+            printf("Received result: %u\n", dut->out_data);
             results.push_back(dut->out_data);
         }
         
         dut->clk = 0; dut->eval();
     }
+    printf("All results received.\n");
     
     // Clean up
     delete dut;

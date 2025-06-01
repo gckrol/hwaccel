@@ -20,7 +20,8 @@ OBJ = $(patsubst src/%.cpp,obj/%.o,$(SRC))
 OPT = -Ofast -march=native -flto -fopenmp-simd -pthread # -fopt-info-vec-missed # -fopenmp # -fopt-info-vec-missed
 INC = -Isrc
 
-VERILOG_SOURCES = rtl/matmul.v
+# Verilog for testing. Synthesized verilog is defined in yosys/synth.ys
+VERILOG_SOURCES = rtl/matmul_tb.v
 VERILATOR_FLAGS = -Wall -CFLAGS -std=c++17
 
 .PHONY: compile_commands
@@ -31,8 +32,8 @@ compile_commands:
 all: bin/test test
 
 .PHONY: test
-test: obj_dir/Vmatmul
-	obj_dir/Vmatmul
+test: obj_dir/Vmatmul_tb
+	obj_dir/Vmatmul_tb
 
 bin/%: obj/bin/%.o $(OBJ)
 	@mkdir -p bin
@@ -47,12 +48,13 @@ obj/bin/%.o: src/bin/%.cpp
 	@mkdir -p obj/bin
 	$(CC) $(OPT) $(INC) -g -c -o $@ $<
 
-obj_dir/Vmatmul: $(VERILOG_SOURCES) src/verilator/main.cpp
+obj_dir/Vmatmul_tb: $(VERILOG_SOURCES) src/verilator/main.cpp rtl/matmul.v rtl/sram.v
 	verilator $(VERILATOR_FLAGS) \
 	  --cc $(VERILOG_SOURCES) \
 	  --exe src/verilator/main.cpp \
-	  --top-module matmul
-	make -C obj_dir -f Vmatmul.mk Vmatmul
+	  --top-module matmul_tb \
+	  -Irtl
+	make -C obj_dir -f Vmatmul_tb.mk Vmatmul_tb
 
 .PHONY: synth
 synth: bin/analyze_yosys
