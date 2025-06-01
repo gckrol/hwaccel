@@ -6,7 +6,7 @@ WARN = -Wall -Wextra -Wpedantic -Wstrict-prototypes -Wpointer-arith -Wcast-qual 
 -Wno-sign-conversion -Wno-implicit-float-conversion -Wno-shorten-64-to-32 -Wno-double-promotion \
 -Wno-float-conversion -Wno-string-conversion \
 -Wno-gnu-folding-constant -fno-unroll-loops \
--Wno-implicit-int-conversion \
+-Wno-implicit-int-conversion -Wno-float-equal \
 \
 -Werror=implicit-function-declaration -Werror=return-type
 
@@ -55,8 +55,8 @@ obj_dir/Vmatmul: $(VERILOG_SOURCES) src/verilator/main.cpp
 	make -C obj_dir -f Vmatmul.mk Vmatmul
 
 .PHONY: synth
-synth:
-	yosys -s yosys/synth.ys
+synth: bin/analyze_yosys
+	yosys -s yosys/synth.ys | tee obj_dir/yosys.log | bin/analyze_yosys
 
 .PHONY: clean
 clean:
