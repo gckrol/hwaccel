@@ -29,7 +29,7 @@ compile_commands:
 	bear -- make clean all
 
 .PHONY: all
-all: bin/test test
+all: test synth
 
 .PHONY: test
 test: obj_dir/Vmatmul_tb
@@ -48,10 +48,10 @@ obj/bin/%.o: src/bin/%.cpp
 	@mkdir -p obj/bin
 	$(CC) $(OPT) $(INC) -g -c -o $@ $<
 
-obj_dir/Vmatmul_tb: $(VERILOG_SOURCES) src/verilator/main.cpp rtl/matmul.v rtl/sram.v
+obj_dir/Vmatmul_tb: $(VERILOG_SOURCES) src/verilator/test.cpp rtl/matmul.v rtl/sram.v
 	verilator $(VERILATOR_FLAGS) \
 	  --cc $(VERILOG_SOURCES) \
-	  --exe src/verilator/main.cpp \
+	  --exe src/verilator/test.cpp \
 	  --top-module matmul_tb \
 	  -Irtl
 	make -C obj_dir -f Vmatmul_tb.mk Vmatmul_tb

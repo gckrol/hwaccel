@@ -4,6 +4,8 @@
 /.clangd
 /obj_dir
 /.cache
+/obj
+/sim
 
 # PDK files
 /pdk/FreePDK45
