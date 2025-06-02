@@ -13,6 +13,10 @@ module matmul_tb #(
     input  [7:0]  in_data,
     input         in_valid,
     output        in_ready,
+    
+    // Dimension inputs
+    input  [7:0]  vdim,
+    input  [7:0]  hdim,
 
     output [31:0] out_data,
     output        out_valid,
@@ -41,6 +45,8 @@ module matmul_tb #(
         .in_data(in_data),
         .in_valid(in_valid),
         .in_ready(in_ready),
+        .vdim(vdim),
+        .hdim(hdim),
         .out_data(out_data),
         .out_valid(out_valid),
         .out_ready(out_ready),

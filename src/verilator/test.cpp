@@ -35,19 +35,12 @@ std::vector<uint32_t> hw_matmul(const std::vector<std::vector<uint8_t>>& matrix,
     dut->vec_sram_we = 0;
     printf("Vector loaded into SRAM.\n");
     
-    // Send dimensions first (vdim)
-    dut->in_data = vdim;
-    dut->in_valid = 1;
-    dut->clk = 1; dut->eval();
-    dut->clk = 0; dut->eval();
-    
-    // Send hdim
-    dut->in_data = hdim;
-    dut->clk = 1; dut->eval();
-    dut->clk = 0; dut->eval();
+    // Set dimensions directly in the registers
+    dut->vdim = vdim;
+    dut->hdim = hdim;
     
     // Continue with READ_MATRIX state
-    printf("Matrix dimensions sent: %d x %d\n", vdim, hdim);
+    printf("Matrix dimensions set: %d x %d\n", vdim, hdim);
     dut->in_valid = 1;
     
     // Send matrix rows and collect results

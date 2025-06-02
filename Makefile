@@ -21,7 +21,8 @@ OPT = -Ofast -march=native -flto -fopenmp-simd -pthread # -fopt-info-vec-missed 
 INC = -Isrc
 
 # Verilog for testing. Synthesized verilog is defined in yosys/synth.ys
-VERILOG_SOURCES = rtl/matmul_tb.v
+VERILOG_MAIN = rtl/matmul_tb.v
+VERILOG_SOURCES = src/verilator/test.cpp rtl/matmul.v rtl/sram.v rtl/matmul_tb.v
 VERILATOR_FLAGS = -Wall -CFLAGS -std=c++17
 
 .PHONY: compile_commands
@@ -29,7 +30,7 @@ compile_commands:
 	bear -- make clean all
 
 .PHONY: all
-all: test synth
+all: test asic
 
 .PHONY: test
 test: obj_dir/Vmatmul_tb
@@ -48,16 +49,16 @@ obj/bin/%.o: src/bin/%.cpp
 	@mkdir -p obj/bin
 	$(CC) $(OPT) $(INC) -g -c -o $@ $<
 
-obj_dir/Vmatmul_tb: $(VERILOG_SOURCES) src/verilator/test.cpp rtl/matmul.v rtl/sram.v
+obj_dir/Vmatmul_tb: $(VERILOG_SOURCES)
 	verilator $(VERILATOR_FLAGS) \
-	  --cc $(VERILOG_SOURCES) \
+	  --cc $(VERILOG_MAIN) \
 	  --exe src/verilator/test.cpp \
 	  --top-module matmul_tb \
 	  -Irtl
 	make -C obj_dir -f Vmatmul_tb.mk Vmatmul_tb
 
-.PHONY: synth
-synth: bin/analyze_yosys
+.PHONY: asic
+asic: bin/analyze_yosys $(VERILOG_SOURCES)
 	yosys -s yosys/synth.ys | tee obj_dir/yosys.log | bin/analyze_yosys
 
 .PHONY: clean
