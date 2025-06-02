@@ -1,7 +1,3 @@
-// filepath: /home/gkrol/projects/ai/hwaccel/rtl/matmul_tb.v
-`include "sram.v"
-`include "matmul.v"
-
 module matmul_tb #(
     parameter MAX_DIM = 16,
     parameter SRAM_ADDR_WIDTH = 10,
