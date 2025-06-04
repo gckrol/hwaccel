@@ -33,8 +33,10 @@ compile_commands:
 all: test asic
 
 .PHONY: test
-test: obj_dir/Vmatmul_tb
+test: obj_dir/Vmatmul_tb bin/dram_test
+	bin/dram_test
 	obj_dir/Vmatmul_tb
+
 
 bin/%: obj/bin/%.o $(OBJ)
 	@mkdir -p bin
