@@ -59,8 +59,12 @@ obj_dir/Vmatmul_tb: $(VERILOG_SOURCES)
 	  -Irtl
 	make -C obj_dir -f Vmatmul_tb.mk Vmatmul_tb
 
+pdk/NangateOpenCellLibrary_typical.lib:
+	@mkdir -p pdk
+	curl -o pdk/NangateOpenCellLibrary_typical.lib https://raw.githubusercontent.com/The-OpenROAD-Project/OpenROAD-flow-scripts/refs/heads/master/flow/platforms/nangate45/lib/NangateOpenCellLibrary_typical.lib
+
 .PHONY: asic
-asic: bin/analyze_yosys $(VERILOG_SOURCES)
+asic: bin/analyze_yosys $(VERILOG_SOURCES) pdk/NangateOpenCellLibrary_typical.lib
 	yosys -s yosys/synth.ys | tee obj_dir/yosys.log | bin/analyze_yosys
 
 .PHONY: clean
