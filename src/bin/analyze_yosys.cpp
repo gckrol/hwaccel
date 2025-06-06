@@ -10,9 +10,9 @@ including ASIC, DRAM controller, packaging, PCB, and RAM chips.
 #include <string.h>
 
 // PCIE board component parameters
-const double RAM_CAPACITY_GB = 12.0;       // Total RAM capacity in GB
+const double RAM_CAPACITY_GB = 4.0;       // Total RAM capacity in GB
 const double RAM_COST_PER_GB = 5.0;        // USD per GB of RAM
-const double MEMORY_BANDWIDTH_GB_S = 80.0; // Memory bandwidth in GB/s
+const double MEMORY_BANDWIDTH_GB_S = 50.0; // Memory bandwidth in GB/s
 const double PCB_BASE_COST = 30.0;         // Base PCB cost in USD
 const double PACKAGING_BASE_COST = 10.0;   // Base packaging cost in USD
 
@@ -49,7 +49,7 @@ double calculate_system_cost(double area, double freq_ghz, double macs_per_cycle
         printf("   ASIC cost   : $%.3f\n", asic_cost);
         printf("   Packaging   : $%.3f\n", packaging_cost);
         printf("   PCB         : $%.3f\n", pcb_cost);
-        printf("   RAM (12GB)  : $%.3f\n", ram_cost);
+        printf("   RAM (%.0fGB)   : $%.3f\n", RAM_CAPACITY_GB, ram_cost);
         printf("   Total cost  : $%.3f\n\n", total_cost);
     }
     
@@ -75,8 +75,8 @@ int main() {
 
     // Common parameters
     double macs_per_cycle = 1.0;
-    double target_gmac = 100.0;
-    double memory_bandwidth_gb_s = 80.0; // 80GB/s as specified
+    double target_gmac = 40.0;
+    double memory_bandwidth_gb_s = MEMORY_BANDWIDTH_GB_S;
     
     // Frequency calculation
     double freq_ghz_45nm = 1000.0 / delay_ps;
