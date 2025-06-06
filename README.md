@@ -87,3 +87,8 @@ Cost comparison: 16nm is 95.48% of 45nm cost
 
 Note that these numbers are quite rough approximations. These also don't include the area/cost of the DRAM controller.
 
+# License
+
+Copyright 2025 Krol Inventions B.V.
+
+HwAccell is licensed AGPLv3+, see [LICENSE](LICENSE).
