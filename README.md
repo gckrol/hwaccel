@@ -8,7 +8,7 @@ Main design goals:
 - 1.4 GHz clock speed
 - 4 GB LPDDR5 memory per core (50 GB/s)
 - Internal bus width of 256 bits (45 GB/s)
-- Compute: 40 GMAC
+- Compute: 40 GMAC per core
 
 Project summary:
 - RTL: Verilog
@@ -89,6 +89,20 @@ Note that these numbers are quite rough approximations. These also don't include
 
 # License
 
-Copyright 2025 Krol Inventions B.V.
-
 HwAccell is licensed AGPLv3+, see [LICENSE](LICENSE).
+
+    HwAccel: a design and implementation of a LLM inference hardware core
+    Copyright (C) 2025 Krol Inventions B.V.
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
